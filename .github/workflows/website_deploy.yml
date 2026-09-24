@@ -1,0 +1,4 @@
+name: website_deploy
+  push:
+    branches:
+      - main 

@@ -1,0 +1,25 @@
+services:
+  website:
+    image: bg_website:latest
+    container_name: bg_website
+    # ports is only here for local testing, in production we will use cloudflare tunnel
+    ports:
+      - "8080:969"
+    restart: unless-stopped
+    networks:
+      - webnet
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared-tunnel
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+    networks:
+      - webnet
+    depends_on:
+      - website
+
+networks:
+  webnet:

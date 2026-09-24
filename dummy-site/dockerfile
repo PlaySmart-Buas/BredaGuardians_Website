@@ -1,0 +1,13 @@
+FROM node:20-alpine AS build
+# update working directory after test build
+WORKDIR /dummy-site 
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+FROM nginx:alpine
+# update working directory after test build
+COPY --from=build /dummy-site/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 8080
